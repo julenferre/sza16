@@ -16,7 +16,7 @@ char * hitzaHartu(char gaia[]) {
     /*Fitxategia irakurtzen da*/
     int i, ausazkoa; 
     FILE * fitxategia = NULL;
-    char *hitzak[MAX_BUF];
+    char * hitzak[MAX_BUF];
     char lerroa[MAX_BUF];
     char pathosoa[MAX_BUF];
     size_t len = 0;
@@ -35,10 +35,14 @@ char * hitzaHartu(char gaia[]) {
     
     i = 0;
     
-    while (fgets(lerroa, MAX_BUF, fitxategia)!=NULL) {
+    char * hitza = malloc(sizeof(char)*128);
+    while (fgets(lerroa, sizeof(lerroa), fitxategia)!=NULL) {
+        strcpy(hitza, lerroa);
+        strtok(hitza, "\n");
+        hitzak[i] = malloc(sizeof(char)*MAX_BUF);
+        strcpy(hitzak[i],hitza);
+        printf("%d. hitza: %s\n", i, hitza);
         i ++;
-        hitzak[i] = lerroa;
-        printf("%d. hitza: %s", i, hitzak[i]);
     }
     printf("\n");
     
