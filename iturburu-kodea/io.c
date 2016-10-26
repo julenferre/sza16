@@ -5,8 +5,6 @@
 
 #define MAX_BUF 1024
 
-typedef int (*compfn)(const void*, const void*);
-
 /*
  * @brief Gai bat emanda, gai horretako hitz bat bueltatzen dituen metodoa
  * @param Parametro gisa hautatutako gaia hartzen du
@@ -31,12 +29,12 @@ char * hitzaHartu(char gaia[]) {
     
     if (!fitxategia)  {
         printf("%s gaia ez da existitzen\n", gaia);
-        return "1";
+        return "0";
     }
     
     i = 0;
     
-    char * hitza = malloc(sizeof(char)*128);
+    char * hitza = malloc(sizeof(char)*MAX_BUF);
     while (fgets(lerroa, sizeof(lerroa), fitxategia)!=NULL) {
         strcpy(hitza, lerroa);
         strtok(hitza, "\n");
