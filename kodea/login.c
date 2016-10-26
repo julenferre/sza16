@@ -41,13 +41,13 @@ int loginUser(char USER[]) {
     fclose (fitx1);
 
     /*Erabiltzaileari lerro jauziak kentzen zaizkio*/
-    strtok(USER, "\n");
+    strtok(USER, "\r\n");
 
     /*Erabiltzailea bilatzen da*/
     p = i;
     i = -1;
     for(j = 0; j<p; j++){
-        //printf("Erab[j]: %s <-> USER: %s (%d)\n", erab[j], USER, strcmp(erab[j],USER));
+        //printf("%s <-> USER: %s (%d)\n", erab[j], USER, strcmp(erab[j],USER));
         if(strcmp(erab[j],USER)==0)
         {
             i = j;
@@ -98,11 +98,13 @@ int loginPass(int USER, char PASS[]) {
     fclose (fitx2);
 
     /*Pasahitzari lerro jauziak kentzen zaizkio*/
-    strtok(PASS, "\n");
+    strtok(PASS, "\r\n");
 
     /*Emandako pasahitza aldagai batean sartzen da*/
     char * emandakoPass = malloc(sizeof(char)*MAX_BUF);
     strcpy(emandakoPass, pass[USER]);
+
+    printf("Erab: %d, Pass: %s", USER, emandakoPass);
 
     /*Pasahitzen zerrenda askatzen da*/
     for(int k = 0; k < p; k++){

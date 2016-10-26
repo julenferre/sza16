@@ -47,8 +47,9 @@ char * hitzaHartu(char gaia[]) {
     //printf("\n");
     
     fclose (fitxategia);
-    
-    ausazkoa = rand() % i;
+
+    /*Ausazko bat kalkulatzen da*/
+    ausazkoa = i*(rand()/(double) RAND_MAX);
     
     //printf("Ausazkoa: %d. hitza: %s\n", ausazkoa, (char *) hitzak[ausazkoa]);
     

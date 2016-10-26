@@ -26,9 +26,6 @@ int main(int argc, char *argv[])
 	struct timeval timer;
 	fd_set rset;
 
-	char * user = malloc(sizeof(char)*MAX_BUF);
-
-	int jokoarenEgoera = 0;
 	/**
 	 * 0 = erabiltzailea sartu behar da
 	 * 1 = pasahitza sartu behar da
@@ -57,16 +54,20 @@ int main(int argc, char *argv[])
 	{
 		helb_tam = sizeof(bez_helb);
 
-		if((n=recvfrom(sock, buf, MAX_BUF, 0, (struct sockaddr *) &bez_helb, &helb_tam)) !=0)
+		if((n=recvfrom(sock, buf, MAX_BUF, 0, (struct sockaddr *) &bez_helb, &helb_tam)) <0)
 		{
 			perror("Errorea lehen mezua jasotzean");
 			exit(1);
 		}
-
-		//if(n==0)continue;
+        if(n==0)continue;
 
 		if(fork() == 0)	// Prozesu umeak egin beharrekoa.
 		{
+            char * user = malloc(sizeof(char)*MAX_BUF);
+            int jokoarenEgoera = 0;
+            char *token;
+            int komkop=0;
+
 			close(sock);
 			if((elkarrizketa = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 			{
@@ -80,17 +81,14 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 
-			do
+            do
 			{
 
-				if((n=recvfrom(elkarrizketa, buf, MAX_BUF, 0, (struct sockaddr *) &bez_helb, &helb_tam)) < 0)
+				/*if((n=recvfrom(elkarrizketa, buf, MAX_BUF, 0, (struct sockaddr *) &bez_helb, &helb_tam)) < 0)
 				{
 					perror("Errorea mezua jasotzean");
 					exit(1);
-				}
-
-				char *token;
-				int komkop=0;
+				}*/
 
 				/* Komandoa hartu*/
 				token = strtok(buf, ",");
@@ -101,29 +99,32 @@ int main(int argc, char *argv[])
 					komandoak[komkop] = malloc(10);
 					strcpy(komandoak[komkop],token);
 					token = strtok(NULL, ",");
+                    komkop++;
 				}
-
-				strtok(buf,",");
 
 				/*USER komandoa*/
 				if(strcmp(komandoak[0],"USER")==0) {
 					if (jokoarenEgoera != 0) {        /*Komando okerra*/
+                        printf("Komando okerra (1)\n");
 						if (write(elkarrizketa, "EZ,1", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
 					} else if (loginUser(komandoak[1]) == -1) {  /*Erabiltzaile okerra*/
+                        printf("Erab okerra: %s\n",komandoak[1]);
 						if (write(elkarrizketa, "EZ,2", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
-					} else {
-						strcpy(user, komandoak[1]); /*Erabitzaile zuzena*/
+					} else { /*Erabitzaile zuzena*/
+						strcpy(user, komandoak[1]);
+                        printf("Erab zuzena\n");
 						if (write(elkarrizketa, "OK", 2) < 2) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
 						jokoarenEgoera = 1;
+                        strcpy(komandoak[0],"");
 					}
 				}
 
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
 				else if(strcmp(komandoak[0],"PASS")==0) {
 					if (jokoarenEgoera != 1) {        /*Komando okerra*/
 						if (write(elkarrizketa, "EZ,1", 4) < 4) {
-							perror("Errorea erantzuna bidaltzean");
+							perror("Komando okerra (2)");
 							exit(1);
 						}
 					} else if (loginPass(loginUser(user), komandoak[1]) == -1) {
@@ -210,7 +211,8 @@ int main(int argc, char *argv[])
 					exit(0);
 				}*/
 
-			} while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
+			//}while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
+            }while(1);
 
 			close(elkarrizketa);
 
