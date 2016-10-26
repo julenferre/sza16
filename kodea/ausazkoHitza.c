@@ -70,45 +70,22 @@ int compare(const void * a, const void * b){
  * @param 
  * @return Zenbaki bat bueltatzen du
  */
-int main(int argc, char *argv[]){
+char * ausazkoHitza(int argc, char *argv[]){
     
     int caseZenb;
     char buf[MAX_BUF];
-    /*
-    // Egiaztatu argumentu bat pasa dela.    
-    if(argc != 2)
-    {
-            fprintf(stderr, "Erabilera: %s <ekintza>\n", argv[0]);
-            exit(1);
+    char * nahastua =  malloc(sizeof(char)*MAX_BUF);
+
+    printf("Sartu gaia: ");
+    fgets(buf, MAX_BUF, stdin);
+    char * hitza =  malloc(sizeof(char)*MAX_BUF);
+    strcpy(hitza, hitzaHartu(buf));
+    if(*hitza!='1'){
+        printf("Zure hitza: %s\n",hitza);
+        strcpy(nahastua, hitza);
+        qsort(nahastua, sizeof(nahastua), sizeof(char), compare);
+        printf("Nahastutako hitza: %s\n",nahastua);
     }
-    
-    //Egiaztatu komandoa existitzen dela
-    if(strcmp(argv[0],"hitzaHartu")){
-        caseZenb = 1;
-    }
-    else { caseZenb = 0;}
-	
-    switch (caseZenb){
-        case 1:*/
-            //while(fgets(buf, MAX_BUF, stdin) != NULL)
-            while(1)
-            {
-                printf("Sartu gaia: ");
-                fgets(buf, MAX_BUF, stdin);
-                char * hitza =  malloc(sizeof(char)*MAX_BUF);
-                strcpy(hitza, hitzaHartu(buf));
-                if(*hitza!='1'){
-                    printf("Zure hitza: %s\n",hitza);
-                    char * nahastua =  malloc(sizeof(char)*MAX_BUF);
-                    strcpy(nahastua, hitza);
-                    qsort(nahastua, sizeof(nahastua), sizeof(char), compare);
-                    printf("Nahastutako hitza: %s\n",nahastua);
-                }
-            }
-            /*break;
-        default:
-            printf("Ekintza hori ez da existitzen\n");
-            break;
-    }*/
-    return 1;
+
+    return nahastua;
 }
