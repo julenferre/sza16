@@ -56,41 +56,13 @@ char * hitzaHartu(char gaia[]) {
 }//hitzaHartu
 
 /*
- * @brief Hitz bat emanda, hizkiak ordentatzen ditu
- * @param Parametro gisa hitz bat hartzen du
- * @return Hitz hori bueltatuko du, baina hizkiak nahasturik dituela
+ * @brief Bi elementu konparatzeko funtzioa
+ * @param Bi elementu hartzen ditu parametros
+ * @return Zenbaki bat bueltatzen du, lehenengo elementua bigarrena baino
+ * txikiagoa edo handiagoa edo berdinak diren adierazten duena.
  */
-char * qs(char zerrenda[],int ezker_muga,int eskuin_muga)
-{
-    int ezker,eskuin,temp,erdikoa;
-
-    ezker=ezker_muga;
-    eskuin = eskuin_muga;
-    erdikoa = zerrenda[(ezker+eskuin)/2];
-
-    do{
-        while(zerrenda[ezker]<erdikoa && ezker<eskuin_muga)ezker++;
-        while(erdikoa<zerrenda[eskuin] && eskuin > ezker_muga)eskuin--;
-        if(ezker <=eskuin)
-        {
-            temp= zerrenda[ezker];
-            zerrenda[ezker]=zerrenda[eskuin];
-            zerrenda[eskuin]=temp;
-            ezker++;
-            eskuin--;
-
-        }
-
-    }while(ezker<=eskuin);
-    if(ezker_muga<eskuin){qs(zerrenda,ezker_muga,eskuin);}
-    if(eskuin_muga>ezker){qs(zerrenda,ezker,eskuin_muga);}
-    
-    return zerrenda;
-}
-
-char * quicksort(char zerrenda[],int n)
-{
-    qs(zerrenda,0,n-1);
+int compare(const void * a, const void * b){
+    return *(char *)a - *(char *)b;
 }
 
 /*
@@ -128,8 +100,9 @@ int main(int argc, char *argv[]){
                 if(*hitza!='1'){
                     printf("Zure hitza: %s\n",hitza);
                     char * nahastua =  malloc(sizeof(char)*MAX_BUF);
-                    strcpy(nahastua, quicksort(hitza, sizeof(hitza)));
-                    printf("Nahastutako hitza: %s\n",nahastua);                    
+                    strcpy(nahastua, hitza);
+                    qsort(nahastua, sizeof(nahastua), sizeof(char), compare);
+                    printf("Nahastutako hitza: %s\n",nahastua);
                 }
             }
             /*break;
