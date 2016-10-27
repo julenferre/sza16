@@ -76,7 +76,7 @@ int loginPass(int USER, char PASS[]) {
     char * pass[MAX_BUF];
     char pathpass[MAX_BUF];
     char lerroa[MAX_BUF];
-    strcpy(pathpass,"/home/julen/Dropbox/EHU3/SZA/PO2/erabiltzaileak/passwords");
+    strcpy(pathpass,"../erabiltzaileak/passwords");
 
     /*PASAHITZen zerrenda kargatzen da*/
     fitx2= fopen(pathpass, "r");

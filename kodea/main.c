@@ -81,41 +81,40 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 
-			do
-			{
-				printf("jasotakoa: %s\n",buf);
+			do {
+				strtok(buf, "\n");
+				printf("jasotakoa1: %s\n", buf);
 
 				/* Komandoa hartu*/
 				token = strtok(buf, ",");
 
 				/* Parametroak hartu */
-				while( token != NULL )
-				{
+				while (token != NULL) {
 					komandoak[komkop] = malloc(10);
-					strcpy(komandoak[komkop],token);
+					strcpy(komandoak[komkop], token);
 					token = strtok(NULL, ",");
-                    komkop++;
+					komkop++;
 				}
 
 				/*USER komandoa*/
-				if(strcmp(komandoak[0],"USER")==0) {
+				if (strcmp(komandoak[0], "USER") == 0) {
 					if (jokoarenEgoera != 0) {        /*Komando okerra*/
-                        printf("Komando okerra1\n");
+						printf("Komando okerra1\n");
 						if (write(elkarrizketa, "EZ,1", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
 					} else if (loginUser(komandoak[1]) == -1) {  /*Erabiltzaile okerra*/
-                        printf("Erab okerra: %s\n",komandoak[1]);
+						printf("Erab okerra: %s\n", komandoak[1]);
 						if (write(elkarrizketa, "EZ,2", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
 					} else { /*Erabitzaile zuzena*/
 						strcpy(user, komandoak[1]);
-                        printf("Erab zuzena\n");
-                        jokoarenEgoera = 1;
-                        strcpy(komandoak[0],"");
+						printf("Erab zuzena\n");
+						jokoarenEgoera = 1;
+						strcpy(komandoak[0], "");
 						if (write(elkarrizketa, "OK", 2) < 2) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
@@ -123,11 +122,11 @@ int main(int argc, char *argv[])
 					}
 				}
 
-				/*PASS komandoa*/
-				else if(strcmp(komandoak[0],"PASS")==0) {
+					/*PASS komandoa*/
+				else if (strcmp(komandoak[0], "PASS") == 0) {
 					if (jokoarenEgoera != 1) {        /*Komando okerra*/
 						printf("Komando okerra2\n");
-                        if (write(elkarrizketa, "EZ,1", 4) < 4) {
+						if (write(elkarrizketa, "EZ,1", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
@@ -145,48 +144,57 @@ int main(int argc, char *argv[])
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
-						jokoarenEgoera=2;
+						jokoarenEgoera = 2;
 					}
 				}
 
-				/*ENTR komandoa*/
-				else if(strcmp(komandoak[0],"ENTR")==0) {
+					/*ENTR komandoa*/
+				else if (strcmp(komandoak[0], "ENTR") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*LIST komandoa*/
-				else if(strcmp(komandoak[0],"LIST")==0) {
+					/*LIST komandoa*/
+				else if (strcmp(komandoak[0], "LIST") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*PLAY komandoa*/
-				else if(strcmp(komandoak[0],"PLAY")==0) {
+					/*PLAY komandoa*/
+				else if (strcmp(komandoak[0], "PLAY") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*SOLV komandoa*/
-				else if(strcmp(komandoak[0],"SOLV")==0) {
+					/*SOLV komandoa*/
+				else if (strcmp(komandoak[0], "SOLV") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*STOP komandoa*/
-				else if(strcmp(komandoak[0],"STOP")==0) {
+					/*STOP komandoa*/
+				else if (strcmp(komandoak[0], "STOP") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*RANK komandoa*/
-				else if(strcmp(komandoak[0],"RANK")==0) {
+					/*RANK komandoa*/
+				else if (strcmp(komandoak[0], "RANK") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*RNKG komandoa*/
-				else if(strcmp(komandoak[0],"RNKG")==0) {
+					/*RNKG komandoa*/
+				else if (strcmp(komandoak[0], "RNKG") == 0) {
 					printf("USEEER !!");
 				}
 
-				/*EXIT komandoa*/
-				else if(strcmp(komandoak[0],"EXIT")==0) {
+					/*EXIT komandoa*/
+				else if (strcmp(komandoak[0], "EXIT") == 0) {
 					printf("USEEER !!");
+				}
+
+					/*Komando ezezaguna*/
+				else {
+					printf("Komando ezezaguna\n");
+					if (write(elkarrizketa, "EZ,1", 4) < 4) {
+						perror("Errorea erantzuna bidaltzean");
+						exit(1);
+					}
 				}
 
 				/**if(write(elkarrizketa, buf, n) < n)
@@ -210,7 +218,18 @@ int main(int argc, char *argv[])
 					exit(0);
 				}*/
 
-			}while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
+				//}while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
+
+				/*if((n=read(elkarrizketa, buf, MAX_BUF)) < 0)
+				{
+					perror("Errorea mezua jasotzean");
+					exit(1);
+				}*/
+
+				n=read(elkarrizketa, buf, MAX_BUF);
+				printf("jasotakoa2: %s (n:%d)\n", buf, n);
+
+			}while(1);
 
 			close(elkarrizketa);
 
