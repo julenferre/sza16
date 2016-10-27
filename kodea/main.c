@@ -81,14 +81,11 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 
-            do
-			{
+			printf("1\n");
 
-				/*if((n=recvfrom(elkarrizketa, buf, MAX_BUF, 0, (struct sockaddr *) &bez_helb, &helb_tam)) < 0)
-				{
-					perror("Errorea mezua jasotzean");
-					exit(1);
-				}*/
+			while((n=read(elkarrizketa, buf, MAX_BUF)) > 0)
+			{
+				printf("jasotakoa: %s\n",buf);
 
 				/* Komandoa hartu*/
 				token = strtok(buf, ",");
@@ -105,7 +102,7 @@ int main(int argc, char *argv[])
 				/*USER komandoa*/
 				if(strcmp(komandoak[0],"USER")==0) {
 					if (jokoarenEgoera != 0) {        /*Komando okerra*/
-                        printf("Komando okerra (1)\n");
+                        printf("Komando okerra1\n");
 						if (write(elkarrizketa, "EZ,1", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
@@ -119,29 +116,33 @@ int main(int argc, char *argv[])
 					} else { /*Erabitzaile zuzena*/
 						strcpy(user, komandoak[1]);
                         printf("Erab zuzena\n");
+                        jokoarenEgoera = 1;
+                        strcpy(komandoak[0],"");
 						if (write(elkarrizketa, "OK", 2) < 2) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
-						jokoarenEgoera = 1;
-                        strcpy(komandoak[0],"");
 					}
 				}
 
 				/*PASS komandoa*/
 				else if(strcmp(komandoak[0],"PASS")==0) {
 					if (jokoarenEgoera != 1) {        /*Komando okerra*/
-						if (write(elkarrizketa, "EZ,1", 4) < 4) {
-							perror("Komando okerra (2)");
+						printf("Komando okerra2\n");
+                        if (write(elkarrizketa, "EZ,1", 4) < 4) {
+							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
 					} else if (loginPass(loginUser(user), komandoak[1]) == -1) {
 						user = "";
+						printf("Pasahitza okerra\n");
+						jokoarenEgoera = 0;
 						if (write(elkarrizketa, "EZ,3", 4) < 4) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
 						}
 					} else {
+						printf("Pasahitza zuzena\n");
 						if (write(elkarrizketa, "OK", 2) < 2) {
 							perror("Errorea erantzuna bidaltzean");
 							exit(1);
@@ -211,8 +212,7 @@ int main(int argc, char *argv[])
 					exit(0);
 				}*/
 
-			//}while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
-            }while(1);
+			}
 
 			close(elkarrizketa);
 
