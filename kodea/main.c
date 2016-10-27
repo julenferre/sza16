@@ -81,9 +81,7 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 
-			printf("1\n");
-
-			while((n=read(elkarrizketa, buf, MAX_BUF)) > 0)
+			do
 			{
 				printf("jasotakoa: %s\n",buf);
 
@@ -212,7 +210,7 @@ int main(int argc, char *argv[])
 					exit(0);
 				}*/
 
-			}
+			}while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
 
 			close(elkarrizketa);
 
