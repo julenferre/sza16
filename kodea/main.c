@@ -13,8 +13,18 @@
 #include "ausazkoHitza.h"
 
 #define MAX_BUF 1024
-#define PORT 50005
+#define PORT 50007
 #define MAX_WAIT 120
+
+#define EZ_BAT "EZ,1"
+#define EZ_BI "EZ,2"
+#define EZ_HIRU "EZ,3"
+#define EZ_LAU "EZ,4"
+#define EZ_BOST "EZ,5"
+#define EZ_SEI "EZ,6"
+#define EZ_ZAZPI "EZ,7"
+#define EZ_ZORTZI "EZ,8"
+#define EZ_BEDERATZI "EZ,9"
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +58,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	signal(SIGCHLD, SIG_IGN);
+	//signal(SIGCHLD, SIG_IGN);
 
 	while(1)
 	{
@@ -59,177 +69,216 @@ int main(int argc, char *argv[])
 			perror("Errorea lehen mezua jasotzean");
 			exit(1);
 		}
-        if(n==0)continue;
+        //if(n==0)continue;
 
-		if(fork() == 0)	// Prozesu umeak egin beharrekoa.
-		{
+		//if(fork() == 0)	// Prozesu umeak egin beharrekoa.
+		//{
             char * user = malloc(sizeof(char)*MAX_BUF);
-            int jokoarenEgoera = 0;
+            int jokoarenEgoera = 1;
             char *token;
             int komkop=0;
 
-			close(sock);
-			if((elkarrizketa = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+			//close(sock);
+			/*if((elkarrizketa = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 			{
 				perror("Errorea prozesu umearen socketa sortzean");
 				exit(1);
-			}
+			}*/
+            elkarrizketa = sock;
 
-			if(connect(elkarrizketa, (struct sockaddr *) &bez_helb, helb_tam) < 0)
+			if((n=connect(elkarrizketa, (struct sockaddr *) &bez_helb, helb_tam)) < 0)
 			{
 				perror("Errorea bezeroarekin konektatzean");
 				exit(1);
 			}
+            else{
+                printf("Bezeroa ondo konektatu da (%d)\n", n);
+            }
 
 			do {
-				strtok(buf, "\n");
-				printf("jasotakoa1: %s\n", buf);
+                //buf[n]=0;
 
-				/* Komandoa hartu*/
-				token = strtok(buf, ",");
+                strtok(buf, "\n");
 
-				/* Parametroak hartu */
-				while (token != NULL) {
-					komandoak[komkop] = malloc(10);
-					strcpy(komandoak[komkop], token);
-					token = strtok(NULL, ",");
-					komkop++;
-				}
+                /* Komandoa hartu*/
+                token = strtok(buf, ",");
 
-				/*USER komandoa*/
-				if (strcmp(komandoak[0], "USER") == 0) {
-					if (jokoarenEgoera != 0) {        /*Komando okerra*/
-						printf("Komando okerra1\n");
-						if (write(elkarrizketa, "EZ,1", 4) < 4) {
-							perror("Errorea erantzuna bidaltzean");
-							exit(1);
-						}
-					} else if (loginUser(komandoak[1]) == -1) {  /*Erabiltzaile okerra*/
-						printf("Erab okerra: %s\n", komandoak[1]);
-						if (write(elkarrizketa, "EZ,2", 4) < 4) {
-							perror("Errorea erantzuna bidaltzean");
-							exit(1);
-						}
-					} else { /*Erabitzaile zuzena*/
-						strcpy(user, komandoak[1]);
-						printf("Erab zuzena\n");
-						jokoarenEgoera = 1;
-						strcpy(komandoak[0], "");
-						if (write(elkarrizketa, "OK", 2) < 2) {
-							perror("Errorea erantzuna bidaltzean");
-							exit(1);
-						}
-					}
-				}
+                /* Parametroak hartu */
+                while (token != NULL) {
+                    komandoak[komkop] = malloc(10);
+                    strcpy(komandoak[komkop], token);
+                    token = strtok(NULL, ",");
+                    komkop++;
+                }
+                komkop=0;
 
-					/*PASS komandoa*/
-				else if (strcmp(komandoak[0], "PASS") == 0) {
-					if (jokoarenEgoera != 1) {        /*Komando okerra*/
-						printf("Komando okerra2\n");
-						if (write(elkarrizketa, "EZ,1", 4) < 4) {
-							perror("Errorea erantzuna bidaltzean");
-							exit(1);
-						}
-					} else if (loginPass(loginUser(user), komandoak[1]) == -1) {
-						user = "";
-						printf("Pasahitza okerra\n");
-						jokoarenEgoera = 0;
-						if (write(elkarrizketa, "EZ,3", 4) < 4) {
-							perror("Errorea erantzuna bidaltzean");
-							exit(1);
-						}
-					} else {
-						printf("Pasahitza zuzena\n");
-						if (write(elkarrizketa, "OK", 2) < 2) {
-							perror("Errorea erantzuna bidaltzean");
-							exit(1);
-						}
-						jokoarenEgoera = 2;
-					}
-				}
+                /*USER komandoa*/
+                if (strcmp(komandoak[0], "USER") == 0) {
+                    if (jokoarenEgoera != 1) {        /*Komando okerra*/
+                        printf("Komando okerra1\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    } else if (loginUser(komandoak[1]) == -1) {  /*Erabiltzaile okerra*/
+                        printf("Erab okerra: %s\n", komandoak[1]);
+                        if (write(elkarrizketa, EZ_BI, sizeof(EZ_BI)) < sizeof(EZ_BI)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    } else { /*Erabitzaile zuzena*/
+                        strcpy(user, komandoak[1]);
+                        printf("Erab zuzena\n");
+                        jokoarenEgoera = 2;
+                        strcpy(komandoak[0], "");
+                        if (write(elkarrizketa, "OK\n", 3) < 3) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                }
 
-					/*ENTR komandoa*/
-				else if (strcmp(komandoak[0], "ENTR") == 0) {
-					printf("USEEER !!");
-				}
+                /*PASS komandoa*/
+                else if (strcmp(komandoak[0], "PASS") == 0) {
+                    if (jokoarenEgoera != 2) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    } else if (loginPass(loginUser(user), komandoak[1]) == -1) {
+                        user = "";
+                        printf("Pasahitza okerra\n");
+                        jokoarenEgoera = 1;
+                        if (write(elkarrizketa, EZ_HIRU, sizeof(EZ_HIRU)) < sizeof(EZ_HIRU)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    } else {
+                        printf("Pasahitza zuzena\n");
+                        if (write(elkarrizketa, "OK\n", 3) < 3) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                        jokoarenEgoera = 3;
+                    }
+                }
 
-					/*LIST komandoa*/
-				else if (strcmp(komandoak[0], "LIST") == 0) {
-					printf("USEEER !!");
-				}
+                    /*ENTR komandoa*/
+                else if (strcmp(komandoak[0], "ENTR") == 0) {
+                    if (jokoarenEgoera != 1 || jokoarenEgoera != 3 || jokoarenEgoera != 8 || jokoarenEgoera != 9 || jokoarenEgoera != 10) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                    else{
+                        jokoarenEgoera = 4;
+                    }
+                }
 
-					/*PLAY komandoa*/
-				else if (strcmp(komandoak[0], "PLAY") == 0) {
-					printf("USEEER !!");
-				}
+                    /*LIST komandoa*/
+                else if (strcmp(komandoak[0], "LIST") == 0) {
+                    if (jokoarenEgoera != 4) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                    else{
+                        printf("Gaien zerrenda bueltatu\n");
+                    }
+                }
 
-					/*SOLV komandoa*/
-				else if (strcmp(komandoak[0], "SOLV") == 0) {
-					printf("USEEER !!");
-				}
+                    /*PLAY komandoa*/
+                else if (strcmp(komandoak[0], "PLAY") == 0) {
+                    if (jokoarenEgoera != 4) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                    else{
+                        printf("Jokatu\n");
+                        jokoarenEgoera = 6;
+                    }
+                }
 
-					/*STOP komandoa*/
-				else if (strcmp(komandoak[0], "STOP") == 0) {
-					printf("USEEER !!");
-				}
+                    /*SOLV komandoa*/
+                else if (strcmp(komandoak[0], "SOLV") == 0) {
+                    if (jokoarenEgoera != 6) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                    else{
+                        printf("Hitza asmatu\n");
+                    }
+                }
 
-					/*RANK komandoa*/
-				else if (strcmp(komandoak[0], "RANK") == 0) {
-					printf("USEEER !!");
-				}
+                    /*STOP komandoa*/
+                else if (strcmp(komandoak[0], "STOP") == 0) {
+                    if (jokoarenEgoera != 6) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                    else{
+                        printf("stop\n");
+                        jokoarenEgoera = 8;
+                    }
+                }
 
-					/*RNKG komandoa*/
-				else if (strcmp(komandoak[0], "RNKG") == 0) {
-					printf("USEEER !!");
-				}
+                    /*RANK komandoa*/
+                else if (strcmp(komandoak[0], "RANK") == 0) {
+                    if (jokoarenEgoera != 9) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                    else{
+                        printf("rank\n");
+                        jokoarenEgoera = 4;
+                    }
+                }
 
-					/*EXIT komandoa*/
-				else if (strcmp(komandoak[0], "EXIT") == 0) {
-					printf("USEEER !!");
-				}
+                    /*RNKG komandoa*/
+                else if (strcmp(komandoak[0], "RNKG") == 0) {
+                    if (jokoarenEgoera != 4) {        /*Komando okerra*/
+                        printf("Komando okerra2\n");
+                        if (write(elkarrizketa, EZ_BAT, sizeof(EZ_BAT)) < sizeof(EZ_BAT)) {
+                            perror("Errorea erantzuna bidaltzean");
+                            exit(1);
+                        }
+                    }
+                }
 
-					/*Komando ezezaguna*/
-				else {
-					printf("Komando ezezaguna\n");
-					if (write(elkarrizketa, "EZ,1", 4) < 4) {
-						perror("Errorea erantzuna bidaltzean");
-						exit(1);
-					}
-				}
+                    /*EXIT komandoa*/
+                else if (strcmp(komandoak[0], "EXIT") == 0) {
+                    printf("EXIT\n");
+                }
 
-				/**if(write(elkarrizketa, buf, n) < n)
-				{
-					perror("Errorea erantzuna bidaltzean");
-					exit(1);
-				}
-			
-				timer.tv_sec = MAX_WAIT;
-				timer.tv_usec = 0;
-				FD_ZERO(&rset);
-				FD_SET(elkarrizketa, &rset);
-				if((n=select(elkarrizketa+1,&rset,NULL,NULL,&timer)) < 0)
-				{
-					perror("Errorea mezuaren zain");
-					exit(1);
-				}
-				else if(n == 0)
-				{
-					fprintf(stderr,"Itxoite denbora maximoa (%d s.) agortuta. Bezeroa bukatutzat jo da.",MAX_WAIT);
-					exit(0);
-				}*/
+                    /*Komando ezezaguna*/
+                else {
+                    printf("Komando ezezaguna\n");
+                    if (write(elkarrizketa, "EZ,1", 4) < 4) {
+                        perror("Errorea erantzuna bidaltzean");
+                        exit(1);
+                    }
+                }
 
-				//}while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
+                strcpy(komandoak[0],"");
 
-				/*if((n=read(elkarrizketa, buf, MAX_BUF)) < 0)
-				{
-					perror("Errorea mezua jasotzean");
-					exit(1);
-				}*/
-
-				n=read(elkarrizketa, buf, MAX_BUF);
-				printf("jasotakoa2: %s (n:%d)\n", buf, n);
-
-			}while(1);
+            }while((n=read(elkarrizketa, buf, MAX_BUF)) > 0);
 
 			close(elkarrizketa);
 
@@ -239,6 +288,6 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 			exit(0);
-		}
+		//}/fork
 	}
 }
