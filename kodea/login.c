@@ -17,7 +17,7 @@ int loginUser(char USER[]) {
     char * erab[MAX_BUF];
     char patherab[MAX_BUF];
     char lerroa[MAX_BUF];
-    strcpy(patherab,"/home/julen/Dropbox/EHU3/SZA/PO2/erabiltzaileak/users");
+    strcpy(patherab,"../erabiltzaileak/users");
     
     /*ERABILTZAILEen zerrenda kargatzen da*/
     fitx1= fopen(patherab, "r");    
