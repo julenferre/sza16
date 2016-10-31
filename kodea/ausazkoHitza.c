@@ -11,29 +11,29 @@
  * @return Zerrendako hitz bat bueltatuko du
  */
 char * hitzaHartu(char gaia[]) {
-    
+
     /*Fitxategia irakurtzen da*/
-    int i, ausazkoa; 
+    int i, ausazkoa;
     FILE * fitxategia = NULL;
     char * hitzak[MAX_BUF];
     char lerroa[MAX_BUF];
     char pathosoa[MAX_BUF];
     size_t len = 0;
     ssize_t read;
-    
-    strcpy(pathosoa,"/home/julen/Dropbox/EHU3/SZA/PO2/zerrendak/");
+
+    strcpy(pathosoa,"../zerrendak/");
     strcat(pathosoa,gaia);
     strtok(pathosoa,"\n");
-        
+
     fitxategia=fopen(pathosoa, "r");
-    
+
     if (!fitxategia)  {
         printf("%s gaia ez da existitzen\n", gaia);
         return "0";
     }
-    
+
     i = 0;
-    
+
     char * hitza = malloc(sizeof(char)*MAX_BUF);
     while (fgets(lerroa, sizeof(lerroa), fitxategia)!=NULL) {
         strcpy(hitza, lerroa);
@@ -45,14 +45,14 @@ char * hitzaHartu(char gaia[]) {
     }
     free(hitza);
     //printf("\n");
-    
+
     fclose (fitxategia);
 
     /*Ausazko bat kalkulatzen da*/
     ausazkoa = i*(rand()/(double) RAND_MAX);
-    
+
     //printf("Ausazkoa: %d. hitza: %s\n", ausazkoa, (char *) hitzak[ausazkoa]);
-    
+
     return hitzak[ausazkoa];
 }//hitzaHartu
 
@@ -62,17 +62,41 @@ char * hitzaHartu(char gaia[]) {
  * @return Zenbaki bat bueltatzen du, lehenengo elementua bigarrena baino
  * txikiagoa edo handiagoa edo berdinak diren adierazten duena.
  */
-int compare(const void * a, const void * b){
-    return *(char *)a - *(char *)b;
+int compare(const void *a, const void *b) {
+    return *(const char *)a - *(const char *)b;
 }
+
+
+char * ausazkoa(char *jasotakoa){
+
+    //int caseZenb;
+    //char buf[MAX_BUF];
+    char * nahastua =  malloc(sizeof(char)*MAX_BUF);
+
+//    printf("Sartu gaia: ");
+//    fgets(buf, MAX_BUF, stdin);
+//    char * hitza =  malloc(sizeof(char)*MAX_BUF);
+//    strcpy(hitza, jasotakoa);
+//    if(*hitza!='1'){
+//        printf("Zure hitza: %s\n",hitza);
+    printf("Nahastu gabe: %s\n",jasotakoa);
+    strcpy(nahastua, jasotakoa);
+    qsort(nahastua, strlen(nahastua), sizeof(char), compare);
+    printf("Nahastutako hitza: %s\n",nahastua);
+
+//    }
+
+    return nahastua;
+}
+
 
 /*
  * @brief Metodo nagusia
- * @param 
+ * @param
  * @return Zenbaki bat bueltatzen du
  */
-char * ausazkoHitza(int argc, char *argv[]){
-    
+/*char * ausazkoHitza(int argc, char *argv[]){
+
     int caseZenb;
     char buf[MAX_BUF];
     char * nahastua =  malloc(sizeof(char)*MAX_BUF);
@@ -89,4 +113,4 @@ char * ausazkoHitza(int argc, char *argv[]){
     }
 
     return nahastua;
-}
+}*/

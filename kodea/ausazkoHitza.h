@@ -3,7 +3,7 @@
 
 char * hitzaHartu(char gaia[]);
 int compare(const void * a, const void * b);
-char * ausazkoHitza(int argc, char *argv[]);
+char * ausazkoa(char *jasotakoa);
 
 
 #endif // AUSAZKOHITZA_H

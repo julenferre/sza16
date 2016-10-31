@@ -104,7 +104,7 @@ int loginPass(int USER, char PASS[]) {
     char * emandakoPass = malloc(sizeof(char)*MAX_BUF);
     strcpy(emandakoPass, pass[USER]);
 
-    printf("Erab: %d, Pass: %s", USER, emandakoPass);
+    //printf("Erab: %d, Pass: %s", USER, emandakoPass);
 
     /*Pasahitzen zerrenda askatzen da*/
     for(int k = 0; k < p; k++){
