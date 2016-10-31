@@ -12,12 +12,11 @@ int sartuErab(char USER[], char PASS[]) {
     char * erab[MAX_BUF];
     char patherab[MAX_BUF];
     char pathpasa[MAX_BUF];
-    char lerroa[MAX_BUF];
     strcpy(patherab,"../erabiltzaileak/users");
     strcpy(pathpasa,"../erabiltzaileak/passwords");
 
     /*ERABILTZAILEen zerrenda kargatzen da*/
-    fitx1= fopen(patherab, "r");
+    fitx1= fopen(patherab, "a");
     if (!fitx1)  {
         printf("%s ez da existitzen\n", patherab);
         return -1;
@@ -26,14 +25,13 @@ int sartuErab(char USER[], char PASS[]) {
     /*ERABILTZAILE berria sartzen da*/
     char * erabBerria = malloc(sizeof(char)*MAX_BUF);
     strcpy(erabBerria,USER);
-    strcat(erabBerria,"\n");
     fputs(erabBerria,fitx1);
 
     /*Fitxategia ixten da*/
     fclose (fitx1);
 
     /*PASAHITZen zerrenda kargatzen da*/
-    fitx2= fopen(pathpasa, "r");
+    fitx2= fopen(pathpasa, "a");
     if (!fitx2)  {
         printf("%s ez da existitzen\n", pathpasa);
         return -1;
@@ -42,7 +40,6 @@ int sartuErab(char USER[], char PASS[]) {
     /*PASAHITZA berria sartzen da*/
     char * pasaBerria = malloc(sizeof(char)*MAX_BUF);
     strcpy(pasaBerria,PASS);
-    strcat(pasaBerria,"\n");
     fputs(pasaBerria,fitx2);
 
     /*Fitxategia ixten da*/
